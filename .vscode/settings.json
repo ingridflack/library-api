@@ -1,0 +1,14 @@
+{
+    "editor.fontSize": 16,
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-feature"
+    },
+    "editor.tabSize": 2,
+    "git.autofetch": true,
+    "terminal.integrated.fontSize": 16,
+    "window.zoomLeber": 3,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true 
+    }
+}

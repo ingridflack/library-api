@@ -1,53 +1,58 @@
 import { author as authorModel } from "../models/Author.js";
 
 class AuthorController {
-  static async listAuthors(req, res) {
+  static async listAuthors(req, res, next) {
     try {
       const authorsList = await authorModel.find({});
       res.status(200).json(authorsList);
     } catch (err) {
-      res.status(500).json({ message: `${err.message} - Failed` });
+      next(err);
     }
   }
 
-  static async registertAuthor(req, res) {
+  static async registertAuthor(req, res, next) {
     try {
       const newAuthor = await authorModel.create(req.body);
       res
         .status(201)
         .json({ message: "Successfully registered", author: newAuthor });
     } catch (err) {
-      res.status(500).json({ message: `${err.message} - Registered Failed` });
+      next(err);
     }
   }
 
-  static async getAuthor(req, res) {
+  static async getAuthor(req, res, next) {
     try {
       const id = req.params.id;
       const author = await authorModel.findById(id);
-      res.status(200).json(author);
+
+      if (author !== null) {
+        res.status(200).json(author);
+      } else {
+        res.status(404).json({ message: "Not found" });
+      }
     } catch (err) {
-      res.status(500).json({ message: `${err.message} - Failed` });
+      next(err);
     }
   }
 
-  static async updatetAuthor(req, res) {
+  static async updatetAuthor(req, res, next) {
     try {
       const id = req.params.id;
       await authorModel.findByIdAndUpdate(id, req.body);
       res.status(200).json({ message: "Successfully updated" });
     } catch (err) {
-      res.status(500).json({ message: `${err.message} - Failed` });
+      next(err);
     }
   }
 
-  static async deletetAuthor(req, res) {
+  static async deletetAuthor(req, res, next) {
     try {
       const id = req.params.id;
       await authorModel.findByIdAndDelete(id);
       res.status(200).json({ message: "Successfully deleted" });
     } catch (err) {
-      res.status(500).json({ message: `${err.message} - Failed` });
+      next();
     }
   }
 }
