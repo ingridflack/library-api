@@ -10,7 +10,7 @@ class AuthorController {
     }
   }
 
-  static async registertAuthor(req, res, next) {
+  static async registerAuthor(req, res, next) {
     try {
       const newAuthor = await authorModel.create(req.body);
       res
@@ -36,7 +36,7 @@ class AuthorController {
     }
   }
 
-  static async updatetAuthor(req, res, next) {
+  static async updateAuthor(req, res, next) {
     try {
       const id = req.params.id;
       await authorModel.findByIdAndUpdate(id, req.body);
@@ -46,7 +46,7 @@ class AuthorController {
     }
   }
 
-  static async deletetAuthor(req, res, next) {
+  static async deleteAuthor(req, res, next) {
     try {
       const id = req.params.id;
       await authorModel.findByIdAndDelete(id);
