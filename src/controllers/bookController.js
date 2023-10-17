@@ -1,4 +1,5 @@
 import bookModel from "../models/Book.js";
+import NotFound from "../errors/NotFound.js";
 
 class BookController {
   static async listBooks(req, res, next) {
@@ -26,7 +27,12 @@ class BookController {
     try {
       const id = req.params.id;
       const book = await bookModel.findById(id);
-      res.status(200).json(book);
+
+      if (id !== null) {
+        res.status(200).json(book);
+      } else {
+        next(new NotFound("Book ID not found"));
+      }
     } catch (err) {
       next(err);
     }
@@ -36,7 +42,12 @@ class BookController {
     try {
       const id = req.params.id;
       await bookModel.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "Successfully updated" });
+
+      if (id !== null) {
+        res.status(200).json({ message: "Successfully updated" });
+      } else {
+        next(new NotFound("Book ID not found"));
+      }
     } catch (err) {
       next(err);
     }
@@ -46,7 +57,12 @@ class BookController {
     try {
       const id = req.params.id;
       await bookModel.findByIdAndDelete(id);
-      res.status(200).json({ message: "Successfully deleted" });
+
+      if (id !== null) {
+        res.status(200).json({ message: "Successfully deleted" });
+      } else {
+        next(new NotFound("Book ID not found"));
+      }
     } catch (err) {
       next(err);
     }
