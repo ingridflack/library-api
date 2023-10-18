@@ -1,4 +1,4 @@
-import { author as authorModel } from "../models/Author.js";
+import { author as authorModel } from "../models/index.js";
 import NotFound from "../errors/NotFound.js";
 
 class AuthorController {
