@@ -1,4 +1,5 @@
 import { book as bookModel } from "../models/index.js";
+import { author as authorModel } from "../models/Author.js";
 import NotFound from "../errors/NotFound.js";
 
 class BookController {
@@ -68,16 +69,52 @@ class BookController {
     }
   }
 
-  static async getBookByPublishingCompany(req, res, next) {
-    const publishing_company = req.query.publisher;
+  static async getBookByFilter(req, res, next) {
     try {
-      const booksByPublisher = await bookModel.find({ publishing_company });
+      const search = await handleSearch(req.query);
 
-      res.status(200).json(booksByPublisher);
+      if (search !== null) {
+        const booksByFilter = await bookModel.find(search).populate("author");
+
+        res.status(200).json(booksByFilter);
+      } else {
+        res.status(200).send([]);
+      }
     } catch (err) {
       next(err);
     }
   }
+}
+
+async function handleSearch(params) {
+  const { publishing_company, title, minPages, maxPages, author } = params;
+
+  let search = {};
+
+  // Filter by publishing_company
+  if (publishing_company) search.publishing_company = publishing_company;
+
+  // Filter by title
+  if (title) search.title = { $regex: title, $options: "i" };
+
+  // Filter by number of pages
+  if (minPages || maxPages) search.number_of_pages = {};
+
+  if (minPages) search.number_of_pages.$gte = minPages;
+  if (maxPages) search.number_of_pages.$lte = maxPages;
+
+  // Filter by author name
+  if (author) {
+    const authorItem = await authorModel.findOne({ name: author });
+
+    if (authorItem !== null) {
+      search.author = authorItem._id;
+    } else {
+      search = null;
+    }
+  }
+
+  return search;
 }
 
 export default BookController;
