@@ -5,8 +5,11 @@ import NotFound from "../errors/NotFound.js";
 class BookController {
   static async listBooks(req, res, next) {
     try {
-      const bookList = await bookModel.find({});
-      res.status(200).json(bookList);
+      const searchBooks = bookModel.find();
+
+      req.result = searchBooks;
+
+      next();
     } catch (err) {
       next(err);
     }
@@ -74,15 +77,19 @@ class BookController {
       const search = await handleSearch(req.query);
 
       if (search !== null) {
-        const booksByFilter = await bookModel.find(search).populate("author");
+        const booksByFilter = bookModel.find(search).populate("author");
 
-        res.status(200).json(booksByFilter);
+        req.result = booksByFilter;
+
+        next();
       } else {
         res.status(200).send([]);
       }
     } catch (err) {
       next(err);
     }
+
+    // http://localhost:3000/livros/busca?author=Batatinha&ordering=title:1
   }
 }
 

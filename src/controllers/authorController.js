@@ -4,8 +4,11 @@ import NotFound from "../errors/NotFound.js";
 class AuthorController {
   static async listAuthors(req, res, next) {
     try {
-      const authorsList = await authorModel.find({});
-      res.status(200).json(authorsList);
+      const authorsList = authorModel.find({});
+
+      req.result = authorsList;
+
+      next();
     } catch (err) {
       next(err);
     }
